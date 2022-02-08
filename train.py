@@ -143,11 +143,9 @@ def main():
                           momentum=args.momentum)
     wandb.watch(model)
 
-    for epoch in range(1, args.epochs + 1):
+    for epoch in range(1, wandb.run.config.epochs + 1):
         train(args, model, device, train_loader, optimizer, epoch)
         test(args, model, device, test_loader)
-
-    torch.save(model.state_dict(),"/opt/ml/model/model.pth")
 
 
 if __name__ == '__main__':
