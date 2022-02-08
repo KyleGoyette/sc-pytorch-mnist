@@ -11,18 +11,18 @@ import wandb
 # workaround to fetch MNIST data
 import os
 import sys
-tv_version = torchvision.__version__
-print("torchvision version:", tv_version, file=sys.stderr)
-if tuple(map(lambda x: int(x), tv_version.split(".")[:2])) <= (0, 5):
-    url = "https://activeeon-public.s3.eu-west-2.amazonaws.com/datasets/MNIST.old.tar.gz"
-else:
-    url = "https://activeeon-public.s3.eu-west-2.amazonaws.com/datasets/MNIST.new.tar.gz"
-print("download:", url, file=sys.stderr)
+# tv_version = torchvision.__version__
+# print("torchvision version:", tv_version, file=sys.stderr)
+# if tuple(map(lambda x: int(x), tv_version.split(".")[:2])) <= (0, 5):
+#     url = "https://activeeon-public.s3.eu-west-2.amazonaws.com/datasets/MNIST.old.tar.gz"
+# else:
+#     url = "https://activeeon-public.s3.eu-west-2.amazonaws.com/datasets/MNIST.new.tar.gz"
+# print("download:", url, file=sys.stderr)
 
-os.system("wget -O MNIST.tar.gz {}".format(url))
-os.system("tar -zxf MNIST.tar.gz")
-print(os.getcwd())
-wandb.login(key=os.getenv('WANDB_API_KEY'))
+# os.system("wget -O MNIST.tar.gz {}".format(url))
+# os.system("tar -zxf MNIST.tar.gz")
+# print(os.getcwd())
+# wandb.login(key=os.getenv('WANDB_API_KEY'))
 
 class Net(nn.Module):
     def __init__(self):
@@ -95,7 +95,7 @@ def main():
     opener.addheaders = [('User-agent', 'Mozilla/5.0')]
     urllib.request.install_opener(opener)
 
-    wandb.init()
+    wandb.init(project="launch-demo")
     # Training settings
     parser = argparse.ArgumentParser(description='PyTorch MNIST Example')
     parser.add_argument('--batch-size', type=int, default=64, metavar='N',
@@ -146,6 +146,8 @@ def main():
     for epoch in range(1, args.epochs + 1):
         train(args, model, device, train_loader, optimizer, epoch)
         test(args, model, device, test_loader)
+
+    torch.save(model.state_dict(),"/opt/ml/model/model.pth")
 
 
 if __name__ == '__main__':
